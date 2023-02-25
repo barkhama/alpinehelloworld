@@ -42,7 +42,7 @@ pipeline {
            steps {
               script {
                 sh '''
-                   curl -v 172.17.0.1:$APP_EXPOSED_PORT | grep -q "Hello world!"
+                   curl -v localhost:$APP_EXPOSED_PORT | grep -q "Hello world!"
                 '''
               }
            }
@@ -76,7 +76,7 @@ pipeline {
       steps {
           script {
             sh """
-              echo  {\\"your_name\\":\\"${APP_NAME}\\",\\"container_image\\":\\"${CONTAINER_IMAGE}\\", \\"external_port\\":\\"${EXTERNAL_PORT}00\\", \\"internal_port\\":\\"${INTERNAL_PORT}\\"}  > data.json 
+              echo  {\\"your_name\\":\\"${APP_NAME}\\",\\"container_image\\":\\"${CONTAINER_IMAGE}\\", \\"external_port\\":\\"${EXTERNAL_PORT}\\", \\"internal_port\\":\\"${INTERNAL_PORT}\\"}  > data.json 
               curl -v -X POST http://${STG_API_ENDPOINT}/staging -H 'Content-Type: application/json'  --data-binary @data.json  2>&1 | grep 200
             """
           }
@@ -85,7 +85,7 @@ pipeline {
      }
      stage('PROD - Deploy app') {
        when {
-           expression { GIT_BRANCH == 'origin/main' }
+           expression { GIT_BRANCH == 'origin/master' }
        }
      agent any
 
